@@ -100,7 +100,6 @@ export default {
     onopen () {
       this.error = false
       this.connected = true
-      this.messages.push({ 'title': 'System', 'message': 'Connection open' })
     },
     onclose () {
       this.error = false
@@ -133,6 +132,14 @@ export default {
 
         this.$connect('ws://localhost:8080/stream?token=' + token)
 
+        this.axios({
+          url: this.url + 'message',
+          method: 'POST',
+          data: { 'message': this.handle + ' Has joined the chat', 'title': 'system', 'priority': 2 },
+          headers: {
+            'X-Gotify-Key': this.gotifyKey
+          }
+        })
         // TODO Show Logged in
       }).catch((err) => {
         console.log(err)
@@ -157,7 +164,7 @@ export default {
       this.axios({
         url: this.url + 'message',
         method: 'POST',
-        data: { 'id': 0, 'message': this.newMessage, 'title': this.handle, 'priority': 2 },
+        data: { 'message': this.newMessage, 'title': this.handle, 'priority': 2 },
         headers: {
           'X-Gotify-Key': this.gotifyKey
         }
