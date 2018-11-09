@@ -38,14 +38,6 @@
             </v-card-title>
             <v-card-text>
               <v-flex xs12>
-                <v-text-field v-model="auth.username"
-                              label="Username"
-                ></v-text-field>
-
-                <v-text-field type="password" v-model="auth.password"
-                              label="Password"
-                ></v-text-field>
-
                  <v-text-field type="text" v-model="handle"
                               label="Handle" required
                 ></v-text-field>
@@ -67,25 +59,17 @@
               </v-card>
             </v-flex>
 
-        <v-flex xs12 sm6 offset-sm3 v-if="connected">
-            <v-card>
-              <v-card-title primary-title>
-                <h3 class="headline mb-0">Chat</h3>
-              </v-card-title>
-              <v-card-text>
-                <v-flex xs12>
-                  <v-text-field v-model="newMessage" name="newMessage"
-                          label="Message"
+
+
+            <v-footer class="pa-3" v-if="connected" fixed dark height="60" app >
+                  <v-text-field v-model="newMessage" name="newMessage" solo light
+                          label="Message" hide-details
                   ></v-text-field>
 
-                  <v-btn @click="send" :disabled="!newMessage">Send</v-btn>
+                  <v-btn color="primary" dark @click="send" :disabled="!newMessage">Send</v-btn>
                   <v-btn @click="logout" flat>Logout</v-btn>
-                </v-flex>
-
-              </v-card-text>
-            </v-card>
-          </v-flex>
-                      </v-layout>
+            </v-footer>
+          </v-layout>
       </v-layout>
     </v-content>
   </v-app>
