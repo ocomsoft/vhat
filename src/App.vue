@@ -154,7 +154,7 @@ export default {
         url: this.url + 'client/' + this.client_id,
         method: 'DELETE',
         auth: this.auth
-      }).then((resp) => {
+      }).finally(() => {
         this.token = null
         this.$disconnect()
         this.messages = []
