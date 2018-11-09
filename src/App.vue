@@ -22,6 +22,7 @@
       type="warning"
     >
       Connection Closed
+        <v-btn @click="logout">Login</v-btn>
     </v-alert>
       <v-alert v-if="error"
       :value="true"
@@ -59,8 +60,6 @@
               </v-card>
             </v-flex>
 
-
-
             <v-footer class="pa-3" v-if="connected" fixed dark height="60" app >
                   <v-text-field v-model="newMessage" name="newMessage" solo light
                           label="Message" hide-details
@@ -91,6 +90,7 @@ export default {
       messages: [],
       newMessage: 'Just work!!!',
       token: null,
+      client_id: null,
       socket: null,
       connected: false,
       error: false
@@ -109,7 +109,7 @@ export default {
     onerror (err) {
       this.connected = false
       this.error = true
-      console.log (err)
+      console.log(err)
     },
     onmessage (msg) {
       this.messages.push(JSON.parse(msg.data))
@@ -120,15 +120,16 @@ export default {
       this.axios({
         url: this.url + 'client',
         method: 'POST',
-        data: { 'name': this.handle  + '-vhat' },
-        //withCredentials: true,
+        data: { 'name': this.handle + '-vhat' },
+        // withCredentials: true,
         auth: this.auth
       }).then((resp) => {
         const token = resp.data.token
 
         this.token = token
+        this.client_id = resp.data.id
 
-        this.newMessage = "Hi, I am "+ this.handle
+        this.newMessage = 'Hi, I am ' + this.handle
 
         this.$connect('ws://localhost:8080/stream?token=' + token)
 
@@ -141,9 +142,16 @@ export default {
       })
     },
     logout () {
-      this.token = null
-      this.$disconnect()
-      this.messages = []
+      // Tell gotify we are logged out - remove the client
+      this.axios({
+        url: this.url + 'client/' + this.client_id,
+        method: 'DELETE',
+        auth: this.auth
+      }).then((resp) => {
+        this.token = null
+        this.$disconnect()
+        this.messages = []
+      })
     },
     send () {
       this.axios({
@@ -152,7 +160,7 @@ export default {
         data: { 'id': 0, 'message': this.newMessage, 'title': this.handle, 'priority': 2 },
         headers: {
           'X-Gotify-Key': this.gotifyKey
-        },
+        }
       }).then((resp) => {
         this.newMessage = ''
         // this.messages.push(resp.data)
