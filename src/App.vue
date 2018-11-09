@@ -46,6 +46,10 @@
                               label="Password"
                 ></v-text-field>
 
+                 <v-text-field type="text" v-model="handle"
+                              label="Handle" required
+                ></v-text-field>
+
                 <v-btn v-on:click="login">Login</v-btn>
               </v-flex>
 
@@ -57,8 +61,8 @@
       <v-layout v-if="token">
           <v-layout row wrap>
             <v-flex xs12 mb-2 v-for="msg in messages" :key="msg.id">
-              <v-card v-bind:class="{'text-xs-right':msg.title==auth.username}" :color="(msg.title==auth.username) ? 'blue lighten-2' : 'orange lighten-2'">
-                <v-card-title :color="(msg.title==auth.username) ? 'blue darken-2' : 'orange darken-2'" primary-title><strong>{{msg.title}}</strong></v-card-title>
+              <v-card v-bind:class="{'text-xs-right':msg.title==handle}" :color="(msg.title==handle) ? 'blue lighten-2' : 'orange lighten-2'">
+                <v-card-title :color="(msg.title==handle) ? 'blue darken-2' : 'orange darken-2'" primary-title><strong>{{msg.title}}</strong></v-card-title>
                 <v-card-text>{{msg.message}}</v-card-text>
               </v-card>
             </v-flex>
@@ -99,6 +103,7 @@ export default {
         username: (process.env.VUE_APP_DEFAULT_USERNAME || 'admin'),
         password: (process.env.VUE_APP_DEFAULT_PASSWORD || 'admin')
       },
+      handle: '',
       messages: [],
       newMessage: 'Just work!!!',
       token: null,
@@ -131,15 +136,15 @@ export default {
       this.axios({
         url: this.url + 'client',
         method: 'POST',
-        data: { 'name': this.auth.username  + '-vhat' },
-        withCredentials: true,
+        data: { 'name': this.handle  + '-vhat' },
+        //withCredentials: true,
         auth: this.auth
       }).then((resp) => {
         const token = resp.data.token
 
         this.token = token
 
-        this.newMessage = "Hi, I am "+ this.auth.username
+        this.newMessage = "Hi, I am "+ this.handle
 
         this.$connect('ws://localhost:8080/stream?token=' + token)
 
@@ -160,7 +165,7 @@ export default {
       this.axios({
         url: this.url + 'message',
         method: 'POST',
-        data: { 'id': 0, 'message': this.newMessage, 'title': this.auth.username, 'priority': 2 },
+        data: { 'id': 0, 'message': this.newMessage, 'title': this.handle, 'priority': 2 },
         headers: {
           'X-Gotify-Key': this.gotifyKey
         },
