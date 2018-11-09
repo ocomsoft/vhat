@@ -23,6 +23,12 @@
     >
       Connection Closed
     </v-alert>
+      <v-alert v-if="error"
+      :value="true"
+      type="error"
+    >
+      Connection Error
+    </v-alert>
 
       <v-layout v-if="!token">
         <v-flex xs12 sm6 offset-sm3>
@@ -98,17 +104,22 @@ export default {
       token: null,
       socket: null,
       connected: false,
+      error: false
     }
   },
   sockets: {
     onopen () {
+      this.error = false
       this.connected = true
       this.messages.push({ 'title': 'System', 'message': 'Connection open' })
     },
     onclose () {
+      this.error = false
       this.connected = false
     },
     onerror (err) {
+      this.connected = false
+      this.error = true
       console.log (err)
     },
     onmessage (msg) {
@@ -128,6 +139,8 @@ export default {
 
         this.token = token
 
+        this.newMessage = "Hi, I am "+ this.auth.username
+
         this.$connect('ws://localhost:8080/stream?token=' + token)
 
         // TODO Show Logged in
@@ -141,6 +154,7 @@ export default {
     logout () {
       this.token = null
       this.$disconnect()
+      this.messages = []
     },
     send () {
       this.axios({
@@ -151,12 +165,11 @@ export default {
           'X-Gotify-Key': this.gotifyKey
         },
       }).then((resp) => {
+        this.newMessage = ''
         // this.messages.push(resp.data)
       }).catch((err) => {
         console.log(err)
       })
-
-      this.newMessage = ''
     }
   },
   destroy () {

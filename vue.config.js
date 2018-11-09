@@ -12,7 +12,7 @@ module.exports = {
         logLevel: 'debug'
       },
       '/stream*': {
-        target: 'ws://' + process.env.VUE_APP_GOTIFY_URL + '',
+        target: 'ws://' + process.env.VUE_APP_GOTIFY_URL,
         ws: true,
         secure: false,
         logLevel: 'debug',
