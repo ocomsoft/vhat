@@ -1,5 +1,7 @@
 # vhat
 
+This project is a demonstration of using gotify with Vue for a simple chat app. This code is not maintained and will have (according to dependabot) A LOT of potential security issues. I would not use in production. This code is purlyfor education purposes.
+
 # Using
 
 When you login use the Username/password of a user in Gotify. You need to use the same username and password as the user who created the Application for the GOTIFY 
